@@ -16,7 +16,10 @@ const TodoCrud = () => {
   const handleClickOpen = (id) => {
     setOpen(true);
     setSelectedId(id)
+    // setSelectedStatus(singTodoData?.status === "true" ? true : false)
   };
+
+
 
 
   const handleClose = () => {
@@ -33,6 +36,8 @@ const TodoCrud = () => {
 
   const [deleteTodo, { isFetching: deleteIsFetching, isError: deleteIsError, error: deleteError, isSuccess: deleteIsSuccess, reset: deleteReset }] = useDeleteTodoMutation()
 
+  const [editText, setEditText] = useState("");
+
   const handleToggle = (item) => {
     toggleTodo({ id: item._id, status: item.status == "true" ? false : true })
   }
@@ -40,6 +45,27 @@ const TodoCrud = () => {
   const handleAddTodo = () => {
     addTodo(text)
   }
+
+
+
+  const editTextClick = (id) => {
+    console.log(id)
+  }
+
+  const [selectedStatus, setSelectedStatus] = useState("")
+
+  const handleStatusChange = (e) => {
+    setSelectedStatus(e.target.value)
+  }
+
+  console.log("selectedStatus", selectedStatus)
+
+  useEffect(() => {
+    if (singTodoData) {
+      setEditText(singTodoData?.text)
+      setSelectedStatus(singTodoData?.status === "true" ? true : false)
+    }
+  }, [singTodoData])
 
   useEffect(() => {
     if (toggleIsError) {
@@ -68,6 +94,7 @@ const TodoCrud = () => {
     }
 
   }, [toggleIsError, toggleIsSuccess, addIsSuccess, addIsError, deleteIsError, deleteIsSuccess])
+
 
 
 
@@ -135,8 +162,34 @@ const TodoCrud = () => {
                 aria-describedby="alert-dialog-description"
               >
                 <DialogContent>
-                  <input type="text" />
-                  <button>Edit Data</button>
+                  {
+                    singleTodoIsFetching ? (
+                      <div
+                        style={{ width: "100%", display: "flex", justifyContent: "center" }}
+                      >
+                        Loading...
+                      </div>
+                    ) : singleTodoIsError ? (
+                      <div
+                        style={{ width: "100%", display: "flex", justifyContent: "center" }}
+                      >
+                        <h4>{singleTodoError.status}</h4>
+                      </div>
+                    ) : singleTodoIsSuccess ? (
+                      <>
+                        <h1>Edit Data</h1>
+                        <form>
+                          <input type="text" value={editText} onChange={(e) => setEditText(e.target.value)} required />
+                          <select onChange={handleStatusChange} defaultValue={selectedStatus} required>
+                            <option value="">Select an option</option>
+                            <option value={true}>true</option>
+                            <option value={false}>false</option>
+                          </select>
+                          <button onClick={() => editTextClick(selectedId)}>Edit Text</button>
+                        </form>
+                      </>
+                    ) : ""
+                  }
                 </DialogContent>
               </Dialog>
             }
