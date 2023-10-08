@@ -1,10 +1,10 @@
 import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar"
 import EmployeesTable from "./components/employeeTable/EmployeesTable";
-import CompaniesTable from "./components/companiesTable/CompaniesTable";
 import UsersList from "./components/usersList/UsersList";
 import Counter from "./components/counter/Counter";
 import Pets from "./components/pets/Pets";
+import TodoApi from "./components/todoApi/TodoApi";
 
 const App = () => {
   return (
@@ -13,7 +13,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<EmployeesTable />} />
         <Route path="/counter-todo" element={<Counter />} />
-        <Route path="/companiesTable" element={<CompaniesTable />} />
+        <Route path="/todo-api" element={<TodoApi />} />
         <Route path="/users" element={<UsersList />} />
         <Route path="/pets" element={<Pets />} />
         <Route

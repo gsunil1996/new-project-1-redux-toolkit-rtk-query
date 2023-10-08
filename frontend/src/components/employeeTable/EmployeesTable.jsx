@@ -121,7 +121,7 @@ const EmployeesTable = () => {
         <div
           style={{ width: "100%", display: "flex", justifyContent: "center" }}
         >
-          <h4>{error.message}</h4>
+          <h4>{error.status}</h4>
         </div>
       ) : data?.employeesTableData.length == 0 ? (
         <div

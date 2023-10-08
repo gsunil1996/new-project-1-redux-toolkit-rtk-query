@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const employeeRoutes = require("./routes/employeeRoutes");
-const companyRoutes = require("./routes/companiesRoutes");
+const newTodoRoutes = require("./routes/NewToDoRoute");
 
 require("dotenv").config();
 require("./db/conn");
@@ -16,6 +16,6 @@ app.use(cors());
 
 // routes
 app.use(employeeRoutes);
-app.use(companyRoutes);
+app.use(newTodoRoutes);
 
 app.listen(PORT, () => console.log("Server running on port " + PORT));
