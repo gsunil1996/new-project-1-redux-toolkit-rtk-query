@@ -22,7 +22,7 @@ const Navbar = () => {
           onClick={() => navigate('/')} >Employees Table</Button>
 
         <Button variant="contained" style={{ background: "#FCF951FF", color: "#422057FF" }}
-          onClick={() => navigate('/todo-api')}>Todo-Api</Button>
+          onClick={() => navigate('/todo-crud')}>Todo-Crud</Button>
       </div>
     </div>
   )

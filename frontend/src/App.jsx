@@ -4,7 +4,8 @@ import EmployeesTable from "./components/employeeTable/EmployeesTable";
 import UsersList from "./components/usersList/UsersList";
 import Counter from "./components/counter/Counter";
 import Pets from "./components/pets/Pets";
-import TodoApi from "./components/todoApi/TodoApi";
+import TodoCrud from "./components/todoCrud/TodoCrud";
+import SingleTodo from "./components/todoCrud/SingleTodo";
 
 const App = () => {
   return (
@@ -13,7 +14,8 @@ const App = () => {
       <Routes>
         <Route path="/" element={<EmployeesTable />} />
         <Route path="/counter-todo" element={<Counter />} />
-        <Route path="/todo-api" element={<TodoApi />} />
+        <Route path="/todo-crud" element={<TodoCrud />} />
+        <Route path="/todo-crud/:id" element={<SingleTodo />} />
         <Route path="/users" element={<UsersList />} />
         <Route path="/pets" element={<Pets />} />
         <Route
