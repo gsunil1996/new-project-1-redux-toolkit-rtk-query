@@ -29,14 +29,18 @@ const Counter = () => {
 
   return (
     <div>
-      <h1>Counter: {value}</h1>
-      <button onClick={handleIncrement}>Increment</button>
-      <button onClick={handleDecrement}>Decrement</button>
-      <input type="number" name="" id="" onChange={(e) => setText(e.target.value)} />
-      <button onClick={handleIncrementByPayload} >Add</button>
-      <button onClick={handleAsyncIncrement} >Add Amount in Async</button>
+      <div>
+        <h1>Counter: {value}</h1>
+        <button onClick={handleIncrement}>Increment</button>
+        <button onClick={handleDecrement}>Decrement</button>
+        <input type="number" name="" id="" onChange={(e) => setText(e.target.value)} />
+        <button onClick={handleIncrementByPayload} >Add</button>
+        <button onClick={handleAsyncIncrement} >Add Amount in Async</button>
+      </div>
       <hr />
-      <Todo />
+      <div>
+        <Todo />
+      </div>
     </div>
   )
 }

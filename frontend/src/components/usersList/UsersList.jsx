@@ -5,6 +5,12 @@ const UsersList = () => {
 
   return (
     <div>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <div>
+          <h1>Users List</h1>
+          <button onClick={() => refetch()} >Refetch Data</button>
+        </div>
+      </div>
       {
         isFetching ? (
           <div
@@ -21,7 +27,6 @@ const UsersList = () => {
         ) : data?.data?.length == 0 ? (
           <div
             style={{
-              width: "100%",
               display: "flex",
               justifyContent: "center",
               textAlign: "center",
@@ -33,12 +38,15 @@ const UsersList = () => {
           <>
             {
               data?.data?.map(item =>
-                <ul key={item.id}>
+                <ul key={item.id} style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  textAlign: "center",
+                }}>
                   <li>{item.first_name}</li>
                 </ul>
               )
             }
-            <button onClick={() => refetch()} >Refresh</button>
           </>
         ) : ""
       }

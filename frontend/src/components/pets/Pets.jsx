@@ -8,7 +8,7 @@ const Pets = () => {
 
   const [num, setNum] = useState(numOfDogs);
 
-  const { data, isFetching, isSuccess, isError, error } = useFetchBreedsQuery(numOfDogs);
+  const { data, isFetching, isSuccess, isError, error, refetch } = useFetchBreedsQuery(numOfDogs);
 
   console.log("pets", data)
 
@@ -22,6 +22,7 @@ const Pets = () => {
             <p>Pets to fetch</p>
             <input type="number" value={num} onChange={(e) => setNum(e.target.value)} placeholder='enter number of dogs to fetch' />
             <button onClick={() => setNumberOfDogs(num)} >Fetch</button>
+            <button onClick={() => refetch()}>Refetch pets</button>
           </div>
         </div>
       </div>
