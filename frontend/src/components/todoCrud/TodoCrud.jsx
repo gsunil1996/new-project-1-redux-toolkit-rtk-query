@@ -1,80 +1,85 @@
+
 import { useEffect, useState } from "react";
-import { useGetTodosQuery, useChangeTodoStatusMutation, useAddTodoMutation, useDeleteTodoMutation, useGetSingleTodoQuery } from "../../redux/features/todoCrudSlice";
+import { useGetTodosQuery, useAddTodoMutation, useDeleteTodoMutation, useGetSingleTodoQuery, useUpdateTodoMutation } from "../../redux/features/todoCrudSlice";
 import { useNavigate } from "react-router-dom";
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 
+
 const TodoCrud = () => {
   const navigate = useNavigate();
 
+
   const [text, setText] = useState("");
+
 
   const [open, setOpen] = useState(false);
 
+
   const [selectedId, setSelectedId] = useState(null);
 
-  const handleClickOpen = (id) => {
-    setOpen(true);
-    setSelectedId(id)
-    // setSelectedStatus(singTodoData?.status === "true" ? true : false)
-  };
-
-
-
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const { data, isError, error, isFetching, isSuccess } = useGetTodosQuery();
 
+
   const { data: singTodoData, isError: singleTodoIsError, error: singleTodoError, isFetching: singleTodoIsFetching, isSuccess: singleTodoIsSuccess } = useGetSingleTodoQuery(selectedId, { skip: !selectedId })
 
-  const [toggleTodo, { isError: toggleIsError, error: toggleError, isFetching: toggleIsFetching, isSuccess: toggleIsSuccess, reset: toggleReset }] = useChangeTodoStatusMutation();
+
+  console.log("singTodoData", singTodoData)
+
 
   const [addTodo, { isFetching: addIsFetching, isError: addIsError, error: addError, isSuccess: addIsSuccess, reset: addReset }] = useAddTodoMutation()
 
+
   const [deleteTodo, { isFetching: deleteIsFetching, isError: deleteIsError, error: deleteError, isSuccess: deleteIsSuccess, reset: deleteReset }] = useDeleteTodoMutation()
+
+
+  const [updateTodo, { isLoading: updateLoader, isSuccess: isUpdateSuccess, isError: isUpdateError, error: updateError, reset: updateReset }] = useUpdateTodoMutation();
+
 
   const [editText, setEditText] = useState("");
 
-  const handleToggle = (item) => {
-    toggleTodo({ id: item._id, status: item.status == "true" ? false : true })
-  }
 
   const handleAddTodo = () => {
     addTodo(text)
   }
 
 
+  const [selectedStatus, setSelectedStatus] = useState(true)
 
-  const editTextClick = (id) => {
-    console.log(id)
-  }
-
-  const [selectedStatus, setSelectedStatus] = useState("")
 
   const handleStatusChange = (e) => {
-    setSelectedStatus(e.target.value)
+    setSelectedStatus(JSON.parse(e.target.value));
   }
 
-  console.log("selectedStatus", selectedStatus)
+
+  const handleClickOpen = (id) => {
+    setOpen(true);
+    setSelectedId(id)
+  };
+
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedStatus(true)
+  };
+
+
+  const handleUpdate = (e) => {
+    e.preventDefault();
+    updateTodo({ id: selectedId, text: editText, status: selectedStatus })
+  }
+
 
   useEffect(() => {
     if (singTodoData) {
       setEditText(singTodoData?.text)
-      setSelectedStatus(singTodoData?.status === "true" ? true : false)
     }
   }, [singTodoData])
 
+
   useEffect(() => {
-    if (toggleIsError) {
-      alert(JSON.stringify(toggleError))
-      toggleReset()
-    } else if (toggleIsSuccess) {
-      alert("successfully toggled status")
-      toggleReset()
-    }
+
 
     if (addIsSuccess) {
       alert("todo added successfully")
@@ -85,6 +90,7 @@ const TodoCrud = () => {
       addReset()
     }
 
+
     if (deleteIsError) {
       alert(JSON.stringify(deleteError))
       deleteReset()
@@ -93,7 +99,22 @@ const TodoCrud = () => {
       deleteReset()
     }
 
-  }, [toggleIsError, toggleIsSuccess, addIsSuccess, addIsError, deleteIsError, deleteIsSuccess])
+
+    if (isUpdateError) {
+      alert(JSON.stringify(updateError))
+      updateReset()
+    } else if (isUpdateSuccess) {
+      alert("todo updated successfully")
+      updateReset()
+      setOpen(false);
+    }
+
+
+  }, [addIsSuccess, addIsError, deleteIsError, deleteIsSuccess, isUpdateError, isUpdateSuccess])
+
+
+
+
 
 
 
@@ -105,6 +126,7 @@ const TodoCrud = () => {
           <h1>Todo Crud</h1>
         </div>
       </div>
+
 
       <div style={{ display: "flex", justifyContent: "center", marginBottom: "5px" }}>
         <div>
@@ -143,9 +165,8 @@ const TodoCrud = () => {
               data?.map(item => (
                 <div key={item._id} style={{ display: "flex", justifyContent: "center" }}>
                   {item.text} - {item.status}
-                  {toggleIsFetching ? (<div>Loading Toggle</div>) :
-                    <button onClick={() => handleToggle(item)} >Toggle Status</button>
-                  }
+
+
                   <button onClick={() => navigate(`/todo-crud/${item._id}`)}>View</button>
                   <button onClick={() => handleClickOpen(item._id)}>Edit</button>
                   <button onClick={() => deleteTodo({ id: item._id })} disabled={deleteIsFetching} >
@@ -154,50 +175,50 @@ const TodoCrud = () => {
                 </div>
               ))
             }
-            {open &&
-              <Dialog
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-              >
-                <DialogContent>
-                  {
-                    singleTodoIsFetching ? (
-                      <div
-                        style={{ width: "100%", display: "flex", justifyContent: "center" }}
-                      >
-                        Loading...
-                      </div>
-                    ) : singleTodoIsError ? (
-                      <div
-                        style={{ width: "100%", display: "flex", justifyContent: "center" }}
-                      >
-                        <h4>{singleTodoError.status}</h4>
-                      </div>
-                    ) : singleTodoIsSuccess ? (
-                      <>
-                        <h1>Edit Data</h1>
-                        <form>
-                          <input type="text" value={editText} onChange={(e) => setEditText(e.target.value)} required />
-                          <select onChange={handleStatusChange} defaultValue={selectedStatus} required>
-                            <option value="">Select an option</option>
-                            <option value={true}>true</option>
-                            <option value={false}>false</option>
-                          </select>
-                          <button onClick={() => editTextClick(selectedId)}>Edit Text</button>
-                        </form>
-                      </>
-                    ) : ""
-                  }
-                </DialogContent>
-              </Dialog>
-            }
+
+
+            <Dialog
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogContent>
+                {
+                  singleTodoIsFetching ? (
+                    <div
+                      style={{ width: "100%", display: "flex", justifyContent: "center" }}
+                    >
+                      Loading...
+                    </div>
+                  ) : singleTodoIsError ? (
+                    <div
+                      style={{ width: "100%", display: "flex", justifyContent: "center" }}
+                    >
+                      <h4>{singleTodoError.status}</h4>
+                    </div>
+                  ) : singleTodoIsSuccess && singTodoData != undefined ? (
+                    <>
+                      <h1>Edit Data</h1>
+                      <form onSubmit={handleUpdate}>
+                        <input type="text" defaultValue={singTodoData?.status === "true" ? true : false} value={editText} onChange={(e) => setEditText(e.target.value)} required />
+                        <select onChange={handleStatusChange} required>
+                          <option value={true}>true</option>
+                          <option value={false}>false</option>
+                        </select>
+                        <button type="submit" disabled={updateLoader}>{updateLoader ? <div>Loading...</div> : "Edit Text"}</button>
+                      </form>
+                    </>
+                  ) : ""
+                }
+              </DialogContent>
+            </Dialog>
           </>
         ) : ""
       }
     </div>
   )
 }
+
 
 export default TodoCrud
